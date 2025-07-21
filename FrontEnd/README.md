@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Welcome to your Lovable project
 
 ## Project info
@@ -72,7 +71,3 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
-=======
-# Hexavarsity_edulearn
-A learning platform 
->>>>>>> ff5997bedd3833cc0432d8185e544243fb8eb6b4
