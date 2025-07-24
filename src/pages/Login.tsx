@@ -14,6 +14,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import learningHero from "@/assets/learning-hero.jpg";
+import { Description } from "@radix-ui/react-toast";
 
 export const Login = () => {
   const { toast } = useToast();
@@ -50,13 +51,18 @@ export const Login = () => {
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) return;
 
-    const emailExists = existingUsers.current.includes(email.toLowerCase());
+    var emailExists = existingUsers.current.includes(email.toLowerCase());
+    // Connect and check DB here
 
     if (emailExists) {
       setMode("login");
       setEmailConfirmed(true);
     } else {
       existingUsers.current.push(email.toLowerCase());
+      toast({
+        title: "Email not Present",
+        description: "Enter details to become a new User. ",
+      });
       setMode("signup");
       setEmailConfirmed(true);
     }
@@ -76,6 +82,8 @@ export const Login = () => {
     const newErrors: { [key: string]: string } = {};
     if (!password) newErrors.password = "Password is required";
     setErrors(newErrors);
+
+    // Connect and check DB here
 
     if (Object.keys(newErrors).length === 0) {
       toast({
@@ -100,20 +108,41 @@ export const Login = () => {
 
     setErrors(newErrors);
     if (Object.keys(newErrors).length === 0) {
-      toast({
-        title: "Account Created",
-        description: "Welcome to EduLearn! Redirecting to login...",
-      });
+      var emailExists = existingUsers.current.includes(email.toLowerCase());
+      // check email in db
 
-      setTimeout(() => {
-        setMode("login");
-        setEmailConfirmed(false);
-        setEmail("");
-        setPassword("");
-        setConfirmPassword("");
-        setFullName("");
-        setErrors({});
-      }, 1500);
+      if (emailExists) {
+        toast({
+          title: "Email already registred",
+          description: "Please login in (or) use 'Forget Password' option",
+        });
+
+        setTimeout(() => {
+          setMode("login");
+          setEmailConfirmed(true);
+          setEmail(email);
+          setPassword("");
+          setConfirmPassword("");
+          setFullName("");
+          setErrors({});
+        }, 1500);
+      } else {
+        toast({
+          title: "Account Created",
+          description: "Welcome to EduLearn! Redirecting to login...",
+        });
+
+        setTimeout(() => {
+          setMode("login");
+          setEmailConfirmed(false);
+          setEmail("");
+          setPassword("");
+          setConfirmPassword("");
+          setFullName("");
+          setErrors({});
+          navigate("/dashboard");
+        }, 1500);
+      }
     }
   };
 
@@ -173,7 +202,7 @@ export const Login = () => {
               variant={mode === "signup" ? "default" : "outline"}
               onClick={() => {
                 setMode("signup");
-                setEmailConfirmed(false);
+                setEmailConfirmed(true);
               }}
             >
               Signup
@@ -215,9 +244,9 @@ export const Login = () => {
                       className={`pl-10 ${emailConfirmed ? "pr-20" : ""}`}
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      readOnly={emailConfirmed}
+                      readOnly={emailConfirmed && mode === "login"}
                     />
-                    {emailConfirmed && (
+                    {emailConfirmed && mode === "login" && (
                       <Button
                         type="button"
                         variant="ghost"
